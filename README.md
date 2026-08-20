@@ -20,62 +20,105 @@ The result is a lightweight, accessible, and interactive gesture control system 
 
 ## Key Features Explained
 
-### 1. Real-time hand tracking
-The app uses MediaPipe Hand tracking to detect and analyse hand landmarks from a live webcam feed. Each frame is converted to RGB, processed through MediaPipe, and then mapped to specific gesture logic. This creates a responsive camera-driven input system that can interpret multiple hand poses in real time.
+### Gesture Feature Matrix
 
-### 2. Gesture-based mouse control
-The left hand acts as a virtual mouse controller. When the index finger is raised and other fingers are mostly relaxed, the system maps the fingertip position to screen coordinates and moves the cursor accordingly. This allows the user to control the pointer without a physical mouse.
+| Hand | Gesture Symbol | Function | What it does |
+| --- | --- | --- | --- |
+| Left | All fingers up | `trackpad mode` | Activates hand swipe navigation using the wrist as an anchor. Horizontal swipes trigger browser back/forward actions and vertical swipes trigger app navigation shortcuts. |
+| Left | Pinky finger only up | `fail-safe kill switch` | Raises `pyautogui.FailSafeException` to stop the app in a safe way if the user intentionally or accidentally leaves the hand in a dangerous position. |
+| Left | Index + middle fingers up, ring + pinky down | `scroll mode` | Detects vertical motion between the two fingers and uses `pyautogui.scroll()` to scroll the active screen. |
+| Left | Index finger up only | `virtual mouse mode` | Maps fingertip position to screen coordinates and moves the cursor in real time. |
+| Left | Index finger + thumb close together | `click / pinch trigger` | Calculates a dynamic pinch ratio; if it drops below threshold, the app triggers a mouse click. |
+| Left | Index finger up + pinch gesture while dragging | `drag and release` | Begins drag mode when the pinch ratio indicates a grab, then releases the mouse when the gesture ends. |
+| Right | Index finger up only | `volume control` | Measures the angle between the wrist and index fingertip and translates it into a volume percentage using `osascript`. |
+| Right | Peace sign (index + middle raised, thumb closed) | `LaunchOS shortcut` | Opens the LaunchOS application and uses a cooldown timer to prevent repeated triggering. |
+| Right | Three fingers up | `Google Classroom shortcut` | Opens the Google Classroom website in the browser. |
+| Both hands | Hands clap together | `easter egg prompt` | Detects a clap distance between left and right wrists, then waits for a nod to trigger the hidden effect. |
+| Face | Nod while prompt active | `Sharingan awakening` | Uses face mesh landmarks and a nose-tip movement threshold to activate the easter-egg mode. |
+| Face | Mouth opens wide | `fire jutsu effect` | Spawns particles around the mouth region and adds an orange-red flame overlay to the camera frame. |
+| Face | Activated Sharingan state | `draw_sharingan` | Draws animated spinning eye symbols on both irises using a custom function. |
 
-### 3. Click interaction using the middle finger
-The system supports a click action when the middle finger is raised during mouse mode. This acts as a tap-like click trigger and provides a simple, natural alternative to a standard mouse click. The feedback is shown on the screen with a green click indicator for confirmation.
+### Feature Details
 
-### 4. Drag and release using a pinch gesture
-A pinch gesture is used for dragging. When the thumb and index finger come close together, the controller triggers a mouse press and enters drag mode. As the hand moves, the cursor follows, allowing the user to drag windows or objects. When the fingers separate again, the mouse is released and drag mode ends.
+#### 1. Real-time hand tracking
+The application uses MediaPipe hands detection to process every webcam frame and extract 21 hand landmarks. These landmarks are converted into gestures that drive mouse control, scrolling, app launching, and volume changes. This is the core foundation for the entire project.
 
-### 5. Smooth cursor motion with filtering
-The mouse movement is not mapped directly one-to-one from the camera to the screen. Instead, the app applies smoothing to reduce jitter and make cursor movement feel far more natural. This helps convert hand motion into usable desktop movement without sudden jumps or noisy tracking behaviour.
+#### 2. Virtual mouse system
+The left hand acts as a cursor controller. When the index finger is extended and the rest are relaxed, the app maps the fingertip location to screen coordinates and moves the mouse pointer smoothly. The function uses smoothing to reduce jitter and create a more natural movement feel.
 
-### 6. Left-hand trackpad mode for browser and app navigation
-When all five fingers are extended on the left hand, the system switches into a trackpad-like navigation mode. It records the wrist position as an anchor and measures movement from that point. If the movement crosses a threshold, it detects a swipe and triggers browser navigation commands such as:
+#### 3. Click interaction
+The system includes a click trigger when the pinch ratio between the thumb and index finger is below a threshold. This acts like a tap/click action and is used to perform desktop interaction without a physical mouse.
 
-- right swipe = Ctrl + Left
-- left swipe = Ctrl + Right
-- up swipe = Ctrl + Up
-- down swipe = Ctrl + Down
+#### 4. Drag and release behavior
+The left-hand pinch logic can also trigger a drag state. Once the pinch is detected, a mouse down action is performed and the cursor follows the hand position. When the pinch is released, a mouse up event is triggered to end the drag safely.
 
-This gives the user a touchpad-style control surface without a physical device.
+#### 5. Scroll mode
+In scroll mode, the user raises the index and middle fingers while the ring and pinky remain down. The app calculates the average vertical distance of those two finger tips and converts motion into a `pyautogui.scroll()` command. This allows the user to scroll through documents, webpages, or app content without a mouse wheel.
 
-### 7. Right-hand system controls and app launching
-The right hand is dedicated to utility and system actions. The system separates these controls from mouse movement so the left hand can remain focused on pointer control while the right hand handles overhead tasks.
+#### 6. Browser navigation swipes
+The five-finger left-hand mode treats the wrist as a swipe anchor. If the user moves left, right, up, or down enough, the app triggers `Ctrl + Left`, `Ctrl + Right`, `Ctrl + Up`, or `Ctrl + Down` keyboard shortcuts. This gives the system trackpad-like page navigation controls.
 
-### 8. Volume control using wrist angle
-In volume mode, the right hand is used with only the index finger raised. The program calculates the angle between the wrist and the index fingertip and maps that value to a volume percentage. This transforms the user’s hand angle into a continuous sound control, creating a smooth and intuitive rotary volume effect.
+#### 7. Right-hand volume mode
+The right-hand index-only gesture is treated as a rotary volume control. The app compares the wrist and index fingertip positions to compute an angle, then converts that angle into a volume percentage. The result is sent to macOS using `osascript` and displayed in a visual bar on the camera feed.
 
-### 9. Real-time volume feedback overlay
-As volume changes, the system draws a visual bar and labels the current level on the OpenCV frame. This gives the user immediate visual confirmation and makes the control feel precise and responsive.
+#### 8. App launch shortcuts
+The system includes two discrete action gestures on the right hand:
 
-### 10. LaunchOS shortcut gesture
-The right-hand peace-sign gesture triggers the LaunchOS application. This uses a cooldown timer so the command is not repeatedly fired while the gesture remains held. It offers a quick action shortcut without requiring keyboard or mouse input.
+- Peace sign = open LaunchOS
+- Three fingers = open Google Classroom
 
-### 11. Google Classroom shortcut gesture
-A three-finger gesture on the right hand opens the Google Classroom website in the default browser. This shows how the project can be extended beyond basic computer control and used as a productivity-focused gesture interface.
+The app uses a cooldown delay to avoid repeated launches from a held gesture.
 
-### 12. Dual-hand interaction model
-The app is designed around two separate hand roles:
+#### 9. Fail-safe logic
+The left-hand pinky-only gesture acts as a built-in fail-safe. If the app detects a potentially unsafe or accidental condition, it raises `pyautogui.FailSafeException` to stop the gesture system gracefully instead of continuing with uncertain input.
 
-- Left hand = mouse and navigation
-- Right hand = system actions and volume
+#### 10. Facial tracking Easter egg
+The project also includes a hidden face-based feature using MediaPipe Face Mesh:
 
-This split makes the control scheme easier to understand, reduces accidental triggering, and improves usability when both hands are used at once.
+- clap with both hands to begin the prompt
+- nod your head to activate the Sharingan effect
+- open your mouth to trigger fire-particle effects
 
-### 13. Drag-release safety and failsafe logic
-The controller has built-in recovery logic. If a drag is active and the user releases the pinch, the mouse button is released. If the hand disappears or a gesture becomes invalid, the app automatically releases the mouse to prevent the system from getting stuck in a dragging state.
+This is not strictly required for the productivity features, but it adds an entertaining AI-driven secret mode and demonstrates the project’s creative potential.
 
-### 14. Camera feed visualization and debugging tools
-The webcam feed is displayed in an OpenCV window and overlays are drawn directly onto the image. The app highlights the cursor, shows drag status, and renders volume bars and gestures in real time. This makes the system easier to test and tune while being used live.
+#### 11. Sharingan visual effect
+Once the nod trigger is detected, the app overlays animated circular eye patterns on both irises using custom drawing logic. This creates a stylized anime-inspired effect and shows how the frame-processing pipeline can be expanded beyond simple desktop control.
 
-### 15. Keyboard-free desktop interaction prototype
-Together, these features create a fully hands-free desktop control prototype that demonstrates how computer vision can be used to replace or supplement traditional input devices. It is especially useful for demos, experimentation, accessibility concepts, and future AI-driven interaction design.
+#### 12. Fire-particle animation effect
+When the mouth is opened wide during the active easter-egg state, the app creates a burst of fire particle objects. Each particle is animated with position, size, velocity, and lifetime values, and an overlay is blended into the frame to simulate an energy effect.
+
+#### 13. Visual feedback overlays
+The app draws landmarks, circles, and labels directly onto the live camera frame. These visual indicators show:
+
+- cursor position
+- drag status
+- click confirmation
+- volume bar
+- scroll mode
+- gesture state
+
+This feedback makes the controller easier to understand and much easier to debug while testing in real time.
+
+#### 14. Multi-hand input design
+The controller deliberately splits functionality by hand:
+
+- left hand = pointer, scrolling, and navigation
+- right hand = system actions and volume control
+
+This separation reduces conflicts between control types and makes the interface more intuitive for users.
+
+#### 15. Full end-to-end system behavior
+The project combines:
+
+- webcam capture
+- human landmark detection
+- dynamic geometric calculations
+- OS automation
+- browser automation
+- visual overlays
+- easter-egg effects
+
+into one complete gesture-controlled interaction system. This makes it a strong demonstration of practical AI, CV, and automation integration in a single Python project.
 
 ## Example Gestures
 
