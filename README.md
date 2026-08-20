@@ -18,39 +18,64 @@ Touchless Controller is designed for users who want a more natural and futuristi
 
 The result is a lightweight, accessible, and interactive gesture control system built in Python for demonstration and experimentation.
 
-## Key Features
+## Key Features Explained
 
-### Gesture-based cursor control
-- Move the mouse with your index finger
-- Perform click actions with a middle-finger tap
-- Use pinch gestures to drag and release objects on screen
-- Maintain smooth cursor motion with real-time hand tracking
+### 1. Real-time hand tracking
+The app uses MediaPipe Hand tracking to detect and analyse hand landmarks from a live webcam feed. Each frame is converted to RGB, processed through MediaPipe, and then mapped to specific gesture logic. This creates a responsive camera-driven input system that can interpret multiple hand poses in real time.
 
-### Virtual trackpad mode
-- Raise all fingers on the left hand to activate trackpad-style interaction
-- Swipe left and right to move through browser history
-- Swipe up and down for quick navigation actions
-- Toggle between precise motion and quick gestures without needing a physical input device
+### 2. Gesture-based mouse control
+The left hand acts as a virtual mouse controller. When the index finger is raised and other fingers are mostly relaxed, the system maps the fingertip position to screen coordinates and moves the cursor accordingly. This allows the user to control the pointer without a physical mouse.
 
-### App and web shortcuts
-- Open LaunchOS with a right-hand gesture
-- Open Google Classroom with a dedicated three-finger gesture
-- Reduce friction for quick access to commonly used tools
+### 3. Click interaction using the middle finger
+The system supports a click action when the middle finger is raised during mouse mode. This acts as a tap-like click trigger and provides a simple, natural alternative to a standard mouse click. The feedback is shown on the screen with a green click indicator for confirmation.
 
-### Volume control
-- Use the right hand in a dedicated index-finger mode for volume adjustment
-- Control volume by changing the angle of the wrist and hand
-- View live volume percentage feedback directly in the camera feed
+### 4. Drag and release using a pinch gesture
+A pinch gesture is used for dragging. When the thumb and index finger come close together, the controller triggers a mouse press and enters drag mode. As the hand moves, the cursor follows, allowing the user to drag windows or objects. When the fingers separate again, the mouse is released and drag mode ends.
 
-### Multi-hand interaction design
-- Right hand for system actions and volume
-- Left hand for cursor and navigation
-- Clear separation between gesture sets for more intuitive control
+### 5. Smooth cursor motion with filtering
+The mouse movement is not mapped directly one-to-one from the camera to the screen. Instead, the app applies smoothing to reduce jitter and make cursor movement feel far more natural. This helps convert hand motion into usable desktop movement without sudden jumps or noisy tracking behaviour.
 
-### Real-time visual feedback
-- MediaPipe landmarks are drawn directly on the webcam feed
-- The app displays live UI indicators for actions like dragging or volume
-- Easy to debug and tune while testing gestures in real time
+### 6. Left-hand trackpad mode for browser and app navigation
+When all five fingers are extended on the left hand, the system switches into a trackpad-like navigation mode. It records the wrist position as an anchor and measures movement from that point. If the movement crosses a threshold, it detects a swipe and triggers browser navigation commands such as:
+
+- right swipe = Ctrl + Left
+- left swipe = Ctrl + Right
+- up swipe = Ctrl + Up
+- down swipe = Ctrl + Down
+
+This gives the user a touchpad-style control surface without a physical device.
+
+### 7. Right-hand system controls and app launching
+The right hand is dedicated to utility and system actions. The system separates these controls from mouse movement so the left hand can remain focused on pointer control while the right hand handles overhead tasks.
+
+### 8. Volume control using wrist angle
+In volume mode, the right hand is used with only the index finger raised. The program calculates the angle between the wrist and the index fingertip and maps that value to a volume percentage. This transforms the user’s hand angle into a continuous sound control, creating a smooth and intuitive rotary volume effect.
+
+### 9. Real-time volume feedback overlay
+As volume changes, the system draws a visual bar and labels the current level on the OpenCV frame. This gives the user immediate visual confirmation and makes the control feel precise and responsive.
+
+### 10. LaunchOS shortcut gesture
+The right-hand peace-sign gesture triggers the LaunchOS application. This uses a cooldown timer so the command is not repeatedly fired while the gesture remains held. It offers a quick action shortcut without requiring keyboard or mouse input.
+
+### 11. Google Classroom shortcut gesture
+A three-finger gesture on the right hand opens the Google Classroom website in the default browser. This shows how the project can be extended beyond basic computer control and used as a productivity-focused gesture interface.
+
+### 12. Dual-hand interaction model
+The app is designed around two separate hand roles:
+
+- Left hand = mouse and navigation
+- Right hand = system actions and volume
+
+This split makes the control scheme easier to understand, reduces accidental triggering, and improves usability when both hands are used at once.
+
+### 13. Drag-release safety and failsafe logic
+The controller has built-in recovery logic. If a drag is active and the user releases the pinch, the mouse button is released. If the hand disappears or a gesture becomes invalid, the app automatically releases the mouse to prevent the system from getting stuck in a dragging state.
+
+### 14. Camera feed visualization and debugging tools
+The webcam feed is displayed in an OpenCV window and overlays are drawn directly onto the image. The app highlights the cursor, shows drag status, and renders volume bars and gestures in real time. This makes the system easier to test and tune while being used live.
+
+### 15. Keyboard-free desktop interaction prototype
+Together, these features create a fully hands-free desktop control prototype that demonstrates how computer vision can be used to replace or supplement traditional input devices. It is especially useful for demos, experimentation, accessibility concepts, and future AI-driven interaction design.
 
 ## Example Gestures
 
