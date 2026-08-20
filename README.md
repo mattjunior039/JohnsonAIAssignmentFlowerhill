@@ -1,4 +1,8 @@
-# Touchless Controller
+# Johnson AI Assignment – Touchless Controller
+
+This project was developed as part of the Johnson AI assignment and is hosted at:
+
+https://github.com/mattjunior039/JohnsonAIAssignmentFlowerhill
 
 A hand-tracking desktop controller that lets you navigate your computer using gestures instead of a mouse, keyboard, or touchpad. This project combines computer vision, MediaPipe hand detection, and PyAutoGUI automation to create a touchless interaction system for everyday laptop use.
 
@@ -12,7 +16,7 @@ Touchless Controller is designed for users who want a more natural and futuristi
 - adjusting system volume
 - launching common tools or websites
 
-The result is a lightweight, accessible, and interactive gesture control system built in Python.
+The result is a lightweight, accessible, and interactive gesture control system built in Python for demonstration and experimentation.
 
 ## Key Features
 
@@ -70,20 +74,21 @@ The result is a lightweight, accessible, and interactive gesture control system 
 
 ## Project Goals
 
-This project aims to:
+This assignment aims to:
 
 - explore computer vision as an input method
 - reduce dependence on physical devices for simple tasks
 - create an accessible control experience for users with limited hardware access
 - demonstrate how AI and vision tools can turn webcam input into useful desktop actions
+- showcase a practical AI-powered interaction prototype suitable for a GitHub portfolio or coursework submission
 
 ## Installation
 
 1. Clone the repository:
 
 ```bash
-git clone <your-repo-url>
-cd <project-folder>
+git clone https://github.com/mattjunior039/JohnsonAIAssignmentFlowerhill.git
+cd JohnsonAIAssignmentFlowerhill
 ```
 
 2. Create and activate a virtual environment (optional but recommended):
@@ -113,7 +118,7 @@ python3 controller.py
 
 ## Demo
 
-Add a screenshot or GIF here to showcase the app in action:
+This project is intended to be demonstrated live with a webcam and a clear hand gesture setup. A screenshot or GIF can be added here to showcase the system in action:
 
 ```md
 ![Touchless Controller Demo](demo.gif)
@@ -143,3 +148,7 @@ This project is available for educational and experimental use.
 ## Contributing
 
 Contributions are welcome. If you improve the gesture logic, add new actions, or improve the recognition pipeline, feel free to open a pull request.
+
+## Repository Context
+
+This repository is intended to present the Johnson AI assignment in a clear, professional, and reusable way. It demonstrates a practical application of computer vision and AI-based interaction design in a real-world desktop environment.
