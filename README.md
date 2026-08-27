@@ -114,11 +114,12 @@ Together, these features turn the webcam into a hands-free desktop control syste
 
 ## Tech Stack
 
-- Python
+- Python 3.10-3.12
 - OpenCV
 - MediaPipe
 - NumPy
 - PyAutoGUI
+- Pillow
 - macOS system automation via `osascript`
 
 ## Project Goals
@@ -140,18 +141,21 @@ git clone https://github.com/mattjunior039/JohnsonAIAssignmentFlowerhill.git
 cd JohnsonAIAssignmentFlowerhill
 ```
 
-2. Create and activate a virtual environment (optional but recommended):
+2. Create and activate a virtual environment (recommended):
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
 ```
 
-3. Install dependencies:
+3. Upgrade pip and install the project dependencies:
 
 ```bash
+python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
+
+> This project is validated for Python 3.10-3.12 and depends on OpenCV, MediaPipe, NumPy, PyAutoGUI, and Pillow.
 
 ## Running the Application
 
@@ -175,10 +179,11 @@ This project is intended to be demonstrated live with a webcam and a clear hand 
 
 ## Notes
 
-- The app requires a webcam.
+- The app requires a webcam and works best on macOS with camera access enabled.
 - Best results are achieved with good lighting and a clear background.
 - The volume control uses AppleScript, so it is intended for macOS.
 - Gesture detection may need tuning depending on camera quality and lighting conditions.
+- Use a clean virtual environment when installing dependencies to avoid conflicting package versions.
 
 ## Future Improvements
 
